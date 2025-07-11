@@ -24,6 +24,7 @@ import Suporte from "./pages/Suporte";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import AdminSettings from "./pages/AdminSettings";
+import EmergencyAccess from "./pages/EmergencyAccess";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +52,7 @@ const App = () => (
             <Route path="/ponto-equilibrio" element={<DashboardLayout><PontoEquilibrio /></DashboardLayout>} />
             <Route path="/suporte" element={<DashboardLayout><Suporte /></DashboardLayout>} />
             <Route path="/admin/settings" element={<DashboardLayout><AdminSettings /></DashboardLayout>} />
+            <Route path="/emergency" element={<EmergencyAccess />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <PWAInstallBanner />

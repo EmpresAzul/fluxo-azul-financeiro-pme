@@ -6,13 +6,15 @@ import { useAuth } from '@/contexts/AuthContext';
 const Index = () => {
   const { user, loading } = useAuth();
 
+  console.log('Index.tsx - Estado atual:', { user: !!user, loading });
+
   // Mostrar loading enquanto verifica autenticação
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-blue-600">
         <div className="flex items-center space-x-2 text-white">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-          <span>Carregando...</span>
+          <span>Carregando sistema...</span>
         </div>
       </div>
     );
@@ -20,10 +22,12 @@ const Index = () => {
 
   // Se usuário logado, redirecionar para dashboard
   if (user) {
+    console.log('Usuário logado, redirecionando para dashboard');
     return <Navigate to="/dashboard" replace />;
   }
 
   // Se não logado, redirecionar para login
+  console.log('Usuário não logado, redirecionando para login');
   return <Navigate to="/login" replace />;
 };
 

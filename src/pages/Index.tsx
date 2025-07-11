@@ -1,35 +1,24 @@
-{
-  "name": "fluxoazul",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "build:dev": "vite build --mode development",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.50.5",
-    "@tanstack/react-query": "^4.32.6",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.15.0"
-  },
-  "devDependencies": {
-    "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "@vitejs/plugin-react": "^4.0.3",
-    "autoprefixer": "^10.4.14",
-    "eslint": "^8.45.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.3",
-    "postcss": "^8.4.27",
-    "tailwindcss": "^3.3.3",
-    "typescript": "^5.0.2",
-    "vite": "^4.4.5"
-  }
-}
+const Index = () => {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">FluxoAzul</h1>
+        <p className="text-gray-600 mb-6">Bem-vindo ao seu projeto conectado com Supabase!</p>
+        <div className="space-y-4">
+          <div className="bg-blue-50 p-4 rounded-md">
+            <p className="text-sm text-blue-700">
+              ✅ Supabase conectado e configurado
+            </p>
+          </div>
+          <div className="bg-green-50 p-4 rounded-md">
+            <p className="text-sm text-green-700">
+              🚀 Pronto para desenvolvimento
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Index;

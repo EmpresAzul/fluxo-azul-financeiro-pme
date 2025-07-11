@@ -1,9 +1,25 @@
 import * as React from "react"
 import * as TooltipPrimitive from "@radix-ui/react-tooltip"
-
 import { cn } from "@/lib/utils"
 
-const TooltipProvider = TooltipPrimitive.Provider
+// Create a safe wrapper for TooltipProvider
+const SafeTooltipProvider: React.FC<{ 
+  children: React.ReactNode;
+  delayDuration?: number;
+}> = ({ children, delayDuration = 700 }) => {
+  try {
+    return (
+      <TooltipPrimitive.Provider delayDuration={delayDuration}>
+        {children}
+      </TooltipPrimitive.Provider>
+    );
+  } catch (error) {
+    console.warn('TooltipProvider error:', error);
+    return <>{children}</>;
+  }
+};
+
+const TooltipProvider = SafeTooltipProvider;
 
 const Tooltip = TooltipPrimitive.Root
 

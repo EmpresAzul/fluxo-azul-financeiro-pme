@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer } from 'recharts';
 import LembretesActiveCard from '@/components/dashboard/LembretesActiveCard';
 import MetricsCards from '@/components/dashboard/MetricsCards';
+import GitHubSyncStatus from '@/components/GitHubSyncStatus';
 
 const Dashboard: React.FC = () => {
   // Mock data for charts
@@ -48,9 +49,10 @@ const Dashboard: React.FC = () => {
       {/* Métricas com dados reais */}
       <MetricsCards />
 
-      {/* Lembretes Ativos */}
-      <div className="mb-6">
+      {/* Lembretes Ativos e GitHub Status */}
+      <div className="responsive-grid-2 mb-6">
         <LembretesActiveCard />
+        <GitHubSyncStatus />
       </div>
 
       {/* Charts Row 1 */}

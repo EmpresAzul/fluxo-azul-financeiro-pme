@@ -1,24 +1,30 @@
+
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+
 const Index = () => {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">FluxoAzul</h1>
-        <p className="text-gray-600 mb-6">Bem-vindo ao seu projeto conectado com Supabase!</p>
-        <div className="space-y-4">
-          <div className="bg-blue-50 p-4 rounded-md">
-            <p className="text-sm text-blue-700">
-              ✅ Supabase conectado e configurado
-            </p>
-          </div>
-          <div className="bg-green-50 p-4 rounded-md">
-            <p className="text-sm text-green-700">
-              🚀 Pronto para desenvolvimento
-            </p>
-          </div>
+  const { user, loading } = useAuth();
+
+  // Mostrar loading enquanto verifica autenticação
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-blue-600">
+        <div className="flex items-center space-x-2 text-white">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+          <span>Carregando...</span>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  // Se usuário logado, redirecionar para dashboard
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  // Se não logado, redirecionar para login
+  return <Navigate to="/login" replace />;
 };
 
 export default Index;

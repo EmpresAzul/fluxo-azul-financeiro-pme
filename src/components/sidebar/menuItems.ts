@@ -1,0 +1,114 @@
+
+import { 
+  LayoutDashboard, 
+  TrendingUp, 
+  DollarSign, 
+  BarChart3, 
+  Package, 
+  Users, 
+  CreditCard, 
+  Calendar, 
+  Target,
+  Calculator,
+  HelpCircle
+} from 'lucide-react';
+import type { MenuItem } from './types';
+
+export const menuItems: MenuItem[] = [
+  {
+    id: 'dashboard',
+    label: 'Dashboard',
+    icon: LayoutDashboard,
+    iconColor: 'text-blue-500',
+    href: '/dashboard',
+    description: 'Visão geral do negócio'
+  },
+  {
+    id: 'lancamentos',
+    label: 'Lançamentos',
+    icon: TrendingUp,
+    iconColor: 'text-green-500',
+    href: '/lancamentos',
+    description: 'Gestão financeira'
+  },
+  {
+    id: 'fluxo-caixa',
+    label: 'Fluxo de Caixa',
+    icon: DollarSign,
+    iconColor: 'text-yellow-500',
+    href: '/fluxo-caixa',
+    description: 'Controle de entradas e saídas'
+  },
+  {
+    id: 'dre',
+    label: 'DRE',
+    icon: BarChart3,
+    iconColor: 'text-purple-500',
+    href: '/dre',
+    description: 'Demonstrativo de resultado'
+  },
+  {
+    id: 'precificacao',
+    label: 'Precificação',
+    icon: Calculator,
+    iconColor: 'text-orange-500',
+    href: '/precificacao',
+    description: 'Cálculo de preços'
+  },
+  {
+    id: 'estoque',
+    label: 'Estoque',
+    icon: Package,
+    iconColor: 'text-indigo-500',
+    href: '/estoque',
+    description: 'Controle de produtos'
+  },
+  {
+    id: 'cadastros',
+    label: 'Cadastros',
+    icon: Users,
+    iconColor: 'text-pink-500',
+    href: '/cadastros',
+    description: 'Clientes e fornecedores'
+  },
+  {
+    id: 'saldos-bancarios',
+    label: 'Saldos Bancários',
+    icon: CreditCard,
+    iconColor: 'text-teal-500',
+    href: '/saldos-bancarios',
+    description: 'Controle bancário'
+  },
+  {
+    id: 'lembretes',
+    label: 'Lembretes',
+    icon: Calendar,
+    iconColor: 'text-red-500',
+    href: '/lembretes',
+    description: 'Agenda e notificações'
+  },
+  {
+    id: 'pipeline',
+    label: 'Pipeline',
+    icon: Target,
+    iconColor: 'text-cyan-500',
+    href: '/pipeline',
+    description: 'Funil de vendas'
+  },
+  {
+    id: 'ponto-equilibrio',
+    label: 'Ponto de Equilíbrio',
+    icon: TrendingUp,
+    iconColor: 'text-emerald-500',
+    href: '/ponto-equilibrio',
+    description: 'Análise de viabilidade'
+  },
+  {
+    id: 'suporte',
+    label: 'Suporte',
+    icon: HelpCircle,
+    iconColor: 'text-violet-500',
+    href: '/suporte',
+    description: 'Agente inteligente e contatos'
+  }
+];

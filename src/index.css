@@ -291,6 +291,11 @@
   box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04);
 }
 
+/* Input shadows for enhanced forms */
+.shadow-input {
+  box-shadow: 0px 2px 3px -1px rgba(0, 0, 0, 0.1), 0px 1px 0px 0px rgba(25, 28, 33, 0.02), 0px 0px 0px 1px rgba(25, 28, 33, 0.08);
+}
+
 /* Mobile optimizations */
 @media (max-width: 640px) {
   .mobile-stack {

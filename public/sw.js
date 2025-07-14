@@ -1,5 +1,6 @@
 
-const CACHE_NAME = 'fluxoazul-v2.0.0';
+const CACHE_NAME = 'fluxoazul-v3.0.0';
+const APP_VERSION = '3.0.0';
 const urlsToCache = [
   '/',
   '/dashboard',
@@ -58,15 +59,32 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch event - advanced caching strategy
+// Fetch event - development-friendly caching strategy
 self.addEventListener('fetch', (event) => {
+  // Skip caching for development hot-reload files
+  if (event.request.url.includes('vite') || 
+      event.request.url.includes('@fs') ||
+      event.request.url.includes('?t=') ||
+      event.request.url.includes('.tsx') ||
+      event.request.url.includes('.ts') ||
+      event.request.url.includes('.jsx') ||
+      event.request.url.includes('.js')) {
+    console.log('FluxoAzul PWA: Bypassing cache for development file:', event.request.url);
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
-        // Return cached version if available
+        // For static assets, use cache but verify freshness
         if (response) {
-          // For API calls, try to fetch fresh data in background
-          if (event.request.url.includes('/api/') || event.request.url.includes('supabase')) {
+          console.log('FluxoAzul PWA: Serving from cache:', event.request.url);
+          
+          // For API calls and main pages, always try to fetch fresh data
+          if (event.request.url.includes('/api/') || 
+              event.request.url.includes('supabase') ||
+              event.request.mode === 'navigate') {
             fetch(event.request)
               .then((freshResponse) => {
                 if (freshResponse.ok) {
@@ -74,21 +92,24 @@ self.addEventListener('fetch', (event) => {
                   caches.open(CACHE_NAME)
                     .then((cache) => {
                       cache.put(event.request, responseClone);
+                      console.log('FluxoAzul PWA: Updated cache for:', event.request.url);
                     });
                 }
               })
               .catch(() => {
-                // Silently fail background updates
+                console.log('FluxoAzul PWA: Background update failed, serving cached version');
               });
           }
           return response;
         }
         
         // Fetch from network
+        console.log('FluxoAzul PWA: Fetching fresh from network:', event.request.url);
         return fetch(event.request)
           .then((response) => {
             // Don't cache if not a valid response
             if (!response || response.status !== 200 || response.type !== 'basic') {
+              console.log('FluxoAzul PWA: Invalid response, not caching:', response?.status);
               return response;
             }
             
@@ -98,11 +119,13 @@ self.addEventListener('fetch', (event) => {
             caches.open(CACHE_NAME)
               .then((cache) => {
                 cache.put(event.request, responseToCache);
+                console.log('FluxoAzul PWA: Cached fresh response for:', event.request.url);
               });
             
             return response;
           })
-          .catch(() => {
+          .catch((error) => {
+            console.log('FluxoAzul PWA: Network fetch failed:', error);
             // Return offline page for navigation requests
             if (event.request.mode === 'navigate') {
               return caches.match('/');
@@ -151,6 +174,43 @@ self.addEventListener('push', (event) => {
     
     event.waitUntil(
       self.registration.showNotification('FluxoAzul', options)
+    );
+  }
+});
+
+// Version check message handler
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'GET_VERSION') {
+    event.ports[0].postMessage({
+      version: APP_VERSION,
+      cacheName: CACHE_NAME
+    });
+  }
+  
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    console.log('FluxoAzul PWA: Forcing service worker update');
+    self.skipWaiting();
+  }
+  
+  if (event.data && event.data.type === 'CLEAR_CACHE') {
+    console.log('FluxoAzul PWA: Clearing all caches');
+    event.waitUntil(
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            console.log('FluxoAzul PWA: Deleting cache:', cacheName);
+            return caches.delete(cacheName);
+          })
+        );
+      }).then(() => {
+        console.log('FluxoAzul PWA: All caches cleared');
+        // Force reload after clearing cache
+        self.clients.matchAll().then((clients) => {
+          clients.forEach((client) => {
+            client.postMessage({ type: 'CACHE_CLEARED' });
+          });
+        });
+      })
     );
   }
 });

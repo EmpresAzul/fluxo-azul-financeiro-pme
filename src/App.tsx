@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import DashboardLayout from "./components/DashboardLayout";
 import PWAInstallBanner from "./components/PWAInstallBanner";
+import PWAUpdateIndicator from "./components/PWAUpdateIndicator";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -51,6 +52,7 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
         <PWAInstallBanner />
+        <PWAUpdateIndicator />
       </AuthProvider>
     </BrowserRouter>
   </TooltipProvider>

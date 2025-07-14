@@ -1,7 +1,7 @@
 
 {
   "name": "FluxoAzul - Gestão Financeira PME",
-  "short_name": "FluxoAzul",
+  "version": "3.0.0",
   "description": "Sistema de gestão financeira completo para pequenas e médias empresas",
   "start_url": "/",
   "display": "standalone",

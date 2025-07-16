@@ -1,6 +1,6 @@
 
-const CACHE_NAME = 'fluxoazul-v3.0.0';
-const APP_VERSION = '3.0.0';
+const CACHE_NAME = 'fluxoazul-v3.0.1';
+const APP_VERSION = '3.0.1';
 const urlsToCache = [
   '/',
   '/dashboard',

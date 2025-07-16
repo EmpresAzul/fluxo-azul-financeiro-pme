@@ -126,45 +126,61 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    console.log('AuthContext: Iniciando configuração de autenticação');
+    console.log('🔐 AuthContext v4.0.0: Iniciando configuração de autenticação');
     
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state change:', event, session?.user?.email);
-        console.log('Session completa:', session);
+    try {
+      // Set up auth state listener com error handling
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        (event, session) => {
+          console.log('🔄 Auth state change:', event, session?.user?.email || 'sem usuário');
+          
+          // Atualizações síncronas apenas
+          setSession(session);
+          setUser(session?.user ?? null);
+          setLoading(false);
+
+          // Log eventos de forma segura
+          if (event === 'SIGNED_IN' && session?.user) {
+            setTimeout(() => {
+              logSecurityEvent('login_success', {
+                login_method: 'email_password',
+                timestamp: new Date().toISOString()
+              }).catch(console.warn);
+            }, 0);
+          } else if (event === 'SIGNED_OUT') {
+            setTimeout(() => {
+              logSecurityEvent('logout', {
+                logout_time: new Date().toISOString()
+              }).catch(console.warn);
+            }, 0);
+          }
+        }
+      );
+
+      // Check for existing session com timeout de segurança
+      Promise.race([
+        supabase.auth.getSession(),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Session timeout')), 10000)
+        )
+      ]).then(({ data: { session } }: any) => {
+        console.log('✅ Initial session check:', session?.user?.email || 'sem sessão');
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+      }).catch((error) => {
+        console.warn('⚠️ Session check falhou:', error);
+        setLoading(false);
+      });
 
-        // Log eventos de autenticação de forma assíncrona
-        if (event === 'SIGNED_IN' && session?.user) {
-          // Use setTimeout to avoid blocking the auth state change
-          setTimeout(() => {
-            logSecurityEvent('login_success', {
-              login_method: 'email_password',
-              timestamp: new Date().toISOString()
-            });
-          }, 100);
-        } else if (event === 'SIGNED_OUT') {
-          setTimeout(() => {
-            logSecurityEvent('logout', {
-              logout_time: new Date().toISOString()
-            });
-          }, 100);
-        }
-      }
-    );
-
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('Initial session check:', session?.user?.email);
-      setSession(session);
-      setUser(session?.user ?? null);
+      return () => {
+        console.log('🧹 AuthContext cleanup');
+        subscription.unsubscribe();
+      };
+    } catch (error) {
+      console.error('❌ Erro crítico no AuthContext:', error);
       setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    }
   }, []);
 
   return (

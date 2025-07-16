@@ -33,7 +33,7 @@ export default defineConfig(({ mode }) => ({
   },
   // PWA Configuration
   define: {
-    __PWA_VERSION__: JSON.stringify('3.0.1'),
+    __PWA_VERSION__: JSON.stringify('4.0.0'),
     'process.env.NODE_ENV': JSON.stringify(mode),
   },
 }));

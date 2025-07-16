@@ -1,8 +1,12 @@
 
-const CACHE_NAME = 'fluxoazul-v3.0.1';
-const APP_VERSION = '3.0.1';
+// Service Worker para PWA - Versão de emergência para resolver cache
+const CACHE_NAME = 'fluxoazul-pwa-v4.0.0';
+const APP_VERSION = '4.0.0';
+const FORCE_CACHE_CLEAR = true;
 const urlsToCache = [
   '/',
+  '/login',
+  '/emergency',
   '/dashboard',
   '/lancamentos',
   '/fluxo-caixa',
@@ -20,41 +24,74 @@ const urlsToCache = [
   '/lovable-uploads/b004bf2a-e9b1-4f11-87da-28e15f0cb2e2.png'
 ];
 
-// Install event - cache resources
+// Install event - FORCE CACHE CLEAR v4.0.0
 self.addEventListener('install', (event) => {
-  console.log('FluxoAzul PWA: Service Worker installing...');
+  console.log('🚀 FluxoAzul PWA v4.0.0: EMERGENCY INSTALL - Force clearing ALL caches');
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('FluxoAzul PWA: Cache opened successfully');
-        return cache.addAll(urlsToCache.map(url => new Request(url, { cache: 'reload' })));
-      })
-      .then(() => {
-        console.log('FluxoAzul PWA: All resources cached');
-        return self.skipWaiting();
-      })
-      .catch((error) => {
-        console.error('FluxoAzul PWA: Cache installation failed:', error);
-      })
+    Promise.all([
+      // Limpar TODOS os caches existentes primeiro
+      caches.keys().then(cacheNames => {
+        console.log('🧹 Found', cacheNames.length, 'existing caches, deleting ALL...');
+        return Promise.all(
+          cacheNames.map(cacheName => {
+            console.log('❌ Deleting cache:', cacheName);
+            return caches.delete(cacheName);
+          })
+        );
+      }),
+      // Aguardar um pouco para garantir limpeza
+      new Promise(resolve => setTimeout(resolve, 500))
+    ]).then(() => {
+      // Agora criar o cache novo
+      return caches.open(CACHE_NAME);
+    }).then(cache => {
+      console.log('✅ New cache v4.0.0 created');
+      return cache.addAll(urlsToCache.map(url => new Request(url, { cache: 'reload' })));
+    }).then(() => {
+      console.log('✅ FluxoAzul PWA v4.0.0: All resources cached fresh');
+      return self.skipWaiting();
+    }).catch(error => {
+      console.error('❌ FluxoAzul PWA v4.0.0: Installation failed:', error);
+    })
   );
 });
 
-// Activate event - clean up old caches
+// Activate event - TOTAL CLEANUP v4.0.0
 self.addEventListener('activate', (event) => {
-  console.log('FluxoAzul PWA: Service Worker activating...');
+  console.log('🔥 FluxoAzul PWA v4.0.0: EMERGENCY ACTIVATION - Total cleanup');
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('FluxoAzul PWA: Deleting old cache:', cacheName);
+    Promise.all([
+      // Garantir que TODOS os caches sejam removidos
+      caches.keys().then((cacheNames) => {
+        console.log('🧹 Activate: Found', cacheNames.length, 'caches to delete');
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            console.log('❌ Activate: Deleting cache:', cacheName);
             return caches.delete(cacheName);
-          }
-        })
-      );
+          })
+        );
+      }),
+      // Aguardar para garantir limpeza
+      new Promise(resolve => setTimeout(resolve, 1000))
+    ]).then(() => {
+      // Recriar apenas o cache atual
+      return caches.open(CACHE_NAME);
+    }).then(cache => {
+      return cache.addAll(urlsToCache.map(url => new Request(url, { cache: 'reload' })));
     }).then(() => {
-      console.log('FluxoAzul PWA: Service Worker activated');
-      return self.clients.claim();
+      console.log('✅ FluxoAzul PWA v4.0.0: Activated with fresh cache');
+      // Notificar todas as abas para forçar reload
+      return self.clients.matchAll().then(clients => {
+        console.log('📢 Notifying', clients.length, 'clients to reload');
+        clients.forEach(client => {
+          client.postMessage({
+            type: 'CACHE_CLEARED',
+            version: APP_VERSION,
+            action: 'FORCE_RELOAD'
+          });
+        });
+        return self.clients.claim();
+      });
     })
   );
 });
